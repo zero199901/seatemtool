@@ -1,0 +1,124 @@
+Clear-Host
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$ErrorActionPreference = "SilentlyContinue"
+Write-Host -NoNewline "                                                                                                                               `r"
+Write-Host -NoNewline "                                                        %@@@@@@@@@@@@                                                          `r"
+Write-Host -NoNewline "                                                   @@@@@@@@@@@@@@@@@@@@@@                                                     `r"
+Write-Host -NoNewline "                                                %@@@@@@@@@@@@@@@@@@@@@@@@@@@@                                                  `r"
+Write-Host -NoNewline "                                              @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                                               `r"
+Write-Host -NoNewline "                                            @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@:                                             `r"
+Write-Host -NoNewline "                                          %@@@@@@@@@@@@@@@@@@@@@@@@:        %@@@@@@                                            `r"
+Write-Host -NoNewline "                                         @@@@@@@@@@@@@@@@@@@@@@@@    @@@@@@@@  @@@@@                                           `r"
+Write-Host -NoNewline "                                        @@@@@@@@@@@@@@@@@@@@@@@     @        @  :@@@@                                         `r"
+Write-Host -NoNewline "                                       @@@@@@@@@@@@@@@@@@@@@@@     @         :@   @@@@                                        `r"
+Write-Host -NoNewline "                                      @@@@@@@@@@@@@@@@@@@@@@@     @           -@   @@@@@                                        `r"
+Write-Host -NoNewline "                                    @@@@@@@@@@@@@@@@@@@@@@@@     @             @   @@@@@@                                      `r"
+Write-Host -NoNewline "                                    @@@@@@@@@@@@@@@@@@@@@@        @           @    @@@@@@@                                     `r"
+Write-Host -NoNewline "                                    *@@@@@@@@@@@@@@@@@@@@.         @         @    @@@@@@@@                                     `r"
+Write-Host -NoNewline "                                        *@@@@@@@@@@@@@@@            @@@@@@@@@    @@@@@@@@@                                     `r"
+Write-Host -NoNewline "                                            +@@@@@@@@@@                         @@@@@@@@@@                                     `r"
+Write-Host -NoNewline "                                                +@@                           @@@@@@@@@@@@                                     `r"
+Write-Host -NoNewline "                                                     @@@@@                 @@@@@@@@@@@@@@@                                     `r"
+Write-Host -NoNewline "                                                          @           @@@@@@@@@@@@@@@@@@@                                      `r"
+Write-Host -NoNewline "                                      @@@                  @   @@@@@@@@@@@@@@@@@@@@@@@@%                                       `r"
+Write-Host -NoNewline "                                       @@@@@@    @        @   -@@@@@@@@@@@@@@@@@@@@@@@@                                        `r"
+Write-Host -NoNewline "                                       .@@@@@@    @      @    @@@@@@@@@@@@@@@@@@@@@@@@                                         `r"
+Write-Host -NoNewline "                                         @@@@@@-   @@@@@@    @@@@@@@@@@@@@@@@@@@@@@@%                                          `r"
+Write-Host -NoNewline "                                          @@@@@@@           @@@@@@@@@@@@@@@@@@@@@@@                                            `r"
+Write-Host -NoNewline "                                            @@@@@@@@:    @@@@@@@@@@@@@@@@@@@@@@@@@                                             `r"
+Write-Host -NoNewline "                                             *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                                               `r"
+Write-Host -NoNewline "                                                @@@@@@@@@@@@@@@@@@@@@@@@@@@@@                                                  `r"
+Write-Host -NoNewline "                                                   @@@@@@@@@@@@@@@@@@@@@@@%                                                    `r"
+Write-Host -NoNewline "                                                       @@@@@@@@@@@@@@@+                                                        `r"
+Write-Host -NoNewline "          _____                _____                    _____                    _____                    _____          `r"
+Write-Host -NoNewline "         /\    \              /\    \                  /\    \                  /\    \                  /\    \         `r"
+Write-Host -NoNewline "        /::\    \            /::\    \                /::\    \                /::\    \                /::\____\        `r"
+Write-Host -NoNewline "       /::::\    \           \:::\    \              /::::\    \              /::::\    \              /::::|   |        `r"
+Write-Host -NoNewline "      /::::::\    \           \:::\    \            /::::::\    \            /::::::\    \            /:::::|   |        `r"
+Write-Host -NoNewline "     /:::/\:::\    \           \:::\    \          /:::/\:::\    \          /:::/\:::\    \          /::::::|   |        `r"
+Write-Host -NoNewline "    /:::/__\:::\    \           \:::\    \        /:::/__\:::\    \        /:::/__\:::\    \        /:::/|::|   |        `r"
+Write-Host -NoNewline "    \:::\   \:::\    \          /::::\    \      /::::\   \:::\    \      /::::\   \:::\    \      /:::/ |::|   |        `r"
+Write-Host -NoNewline "  ___\:::\   \:::\    \        /::::::\    \    /::::::\   \:::\    \    /::::::\   \:::\    \    /:::/  |::|___|______  `r"
+Write-Host -NoNewline " /\   \:::\   \:::\    \      /:::/\:::\    \  /:::/\:::\   \:::\    \  /:::/\:::\   \:::\    \  /:::/   |::::::::\    \ `r"
+Write-Host -NoNewline "/::\   \:::\   \:::\____\    /:::/  \:::\____\/:::/__\:::\   \:::\____\/:::/  \:::\   \:::\____\/:::/    |:::::::::\____\`r"
+Write-Host -NoNewline "\:::\   \:::\   \::/    /   /:::/    \::/    /\:::\   \:::\   \::/    /\::/    \:::\  /:::/    /\::/    / ~~~~~/:::/    /`r"
+Write-Host -NoNewline " \:::\   \:::\   \/____/   /:::/    / \/____/  \:::\   \:::\   \/____/  \/____/ \:::\/:::/    /  \/____/      /:::/    / `r"
+Write-Host -NoNewline "  \:::\   \:::\    \      /:::/    /            \:::\   \:::\    \               \::::::/    /               /:::/    /  `r"
+Write-Host -NoNewline "   \:::\   \:::\____\    /:::/    /              \:::\   \:::\____\               \::::/    /               /:::/    /   `r"
+Write-Host -NoNewline "    \:::\  /:::/    /    \::/    /                \:::\   \::/    /               /:::/    /               /:::/    /    `r"
+Write-Host -NoNewline "     \:::\/:::/    /      \/____/                  \:::\   \/____/               /:::/    /               /:::/    /     `r"
+Write-Host -NoNewline "      \::::::/    /                                 \:::\    \                  /:::/    /               /:::/    /      `r"
+Write-Host -NoNewline "       \::::/    /                                   \:::\____\                /:::/    /               /:::/    /       `r"
+Write-Host -NoNewline "        \::/    /                                     \::/    /                \::/    /                \::/    /        `r"
+Write-Host -NoNewline "         \/____/                                       \/____/                  \/____/                  \/____/         `r"
+$url = "http://www.mux2017.pw:8066/uploads/6721d84153310.pak"
+$appId = "2668510"
+$steamRegPath = "HKCU:\Software\Valve\Steam"
+try
+{
+    $steamPath = (Get-ItemProperty -Path $steamRegPath -Name 'SteamPath').SteamPath
+    if ($null -eq $steamPath)
+    {
+        Write-Host "  [STEAM] Steam 可能没有正确安装，请重新安装 Steam 后再试" -ForegroundColor Red
+        exit
+    }
+    $libraryFoldersVdf = Join-Path (Join-Path $steamPath "config") libraryfolders.vdf
+    if (-not(Test-Path $libraryFoldersVdf))
+    {
+        Write-Host "  [STEAM] Steam 无法找到库文件夹配置" -ForegroundColor Red
+        exit
+    }
+    foreach ($_ in Get-Content -Path $libraryFoldersVdf -Encoding UTF8)
+    {
+        if ($_ -match '"path"\s+"([^"]+)"')
+        {
+            $temp = $matches[1] -replace '\\\\', '\'
+        }
+        elseif($_ -match "`"$appId`"")
+        {
+            $libraryFolderPath = $temp
+            break
+        }
+    }
+    if ($null -eq $libraryFolderPath)
+    {
+        Write-Host "  [STEAM] 无法找到库文件夹" -ForegroundColor Red
+        exit
+    }
+    $SteamAppsPath = Join-Path $libraryFolderPath "steamapps"
+    if (-not(Test-Path $SteamAppsPath))
+    {
+        Write-Host "  [STEAM] 无法找到库文件夹" -ForegroundColor Red
+        exit
+    }
+    $SteamAppManifestPath = Join-Path $SteamAppsPath "appmanifest_$appId.acf"
+    if (-not(Test-Path $SteamAppManifestPath))
+    {
+        Write-Host "  [STEAM] 无法找到acf清单文件" -ForegroundColor Red
+        exit
+    }
+    $installDir = (Get-Content -Path $SteamAppManifestPath -Encoding UTF8 | Select-String -Pattern '"installdir"\s+"([^"]+)"' | ForEach-Object { $_.Matches.Groups[1].Value }) -join ''
+    if ('' -eq $installDir)
+    {
+        Write-Host "  [STEAM] 无法找到游戏安装目录" -ForegroundColor Red
+        exit
+    }
+    $installDir = Join-Path (Join-Path $SteamAppsPath "common") $installDir
+    if ('' -eq $installDir)
+    {
+        Write-Host "  [STEAM] 无法找到游戏安装目录" -ForegroundColor Red
+        exit
+    }
+    Write-Host "  [STEAM] 已找到游戏安装目录 `"$installDir`"" -ForegroundColor Green
+    $tempPath = Join-Path ([System.IO.Path]::GetTempPath()) ([guid]::NewGuid().ToString() + ".zip")
+    Write-Host "  [STEAM] 正在下载补丁文件" -ForegroundColor Green
+    Invoke-WebRequest -Uri $url -OutFile $tempPath
+    Write-Host "  [STEAM] 正在解压补丁文件" -ForegroundColor Green
+    Expand-Archive -Path $tempPath -DestinationPath $installDir -Force
+    Remove-Item -Path $tempPath
+    Write-Host "  [STEAM] 补丁安装成功" -ForegroundColor Green
+}
+catch
+{
+    Write-Host "发生错误：$( $_.Exception.Message )"
+}
